@@ -1,0 +1,16 @@
+a=[1,2,3]
+
+1.
+b=[]
+for i in range(len(b)-1,-1,-1):
+  b.append(a[i])
+
+2. reverse()
+# b=a.reverse() sort() 개념 함수이므로 불가
+# print(a.reverse()) 도 none이 될것이다. 
+a.reverse()
+print(a)
+
+3. [::-1]
+ 리스트가아닌 문자열에서도 사용가능
+ b = a[::-1]
