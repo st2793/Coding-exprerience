@@ -1,0 +1,7 @@
+a=set()
+
+#a.sort()는 집합이므로 불가함.
+
+a=list(a)
+
+a.sort()
