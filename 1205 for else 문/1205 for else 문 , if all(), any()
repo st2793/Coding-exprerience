@@ -1,0 +1,32 @@
+Flag 값을 활용하지 않더라도 for else로 코딩가능하다.
+
+a=[1,2,3,4]
+a가 하나라도 3보다 크면 t 아니면 f
+
+1.any()
+if any(x>3 for x in a):
+  print("t")
+else:
+  print("f")
+
+2. Flag
+flag=0
+
+for x in a:
+  if x>3:
+    flag=1
+  else:
+    flag=0
+if flag==1:
+  print('t')
+else:
+  print('f')
+
+3. for else문
+
+for x in a:
+  if x>3:
+    print('t')
+    break
+else:
+  print('f')
