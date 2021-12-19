@@ -100,5 +100,5 @@ def dfs(idx, list):
 
 dfs(0, [])
 print(answer)
-
+=> [['a', 'b'], ['a', 'c'], ['b', 'c']]
 
