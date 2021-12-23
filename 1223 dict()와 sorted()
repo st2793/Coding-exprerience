@@ -1,0 +1,67 @@
+1. sort()와 sorted()차이
+a1 = [6, 3, 9]
+print('a1:', a1)
+a2 = a1.sort() # 원본을 정렬
+
+print('a1:', a1)
+=> a1: [3, 6, 9]
+print('a2:', a2)
+=>a2: None
+
+==> sort()의 리턴값은 None이다!! a1만 수정되지 a2로 받을 수 없다.
+
+b1 = [6, 3, 9]
+b2 = sorted(b1) # 원본은 유지하고 정렬한 새 리스트를 만듭니다
+print('b1:', b1)
+=> b1: [6, 3, 9]
+print('b2:', b2)
+=> b2: [3, 6, 9]
+
+==> 원본 b1은 유지되고 b2를 정렬함.
+
+
+2. dict() for 문
+
+x = {'a': 10, 'b': 20, 'c': 30, 'd': 40}
+
+for key, value in x.items():
+  print(key, value)
+  
+=>
+a 10
+b 20
+c 30
+d 40
+
+for key in x.keys():
+  print(key, end=' ')
+=> a b c d
+
+for value in x.values():
+  print(value, end=' ')
+=> 10 20 30 40
+
+
+
+
+3. 딕셔너리.get(key)
+x = {'a': 10, 'b': 20, 'c': 30, 'd': 40}
+value1 = x.get("a","없음")
+value2 = x.get("e","없음")
+
+print(value1)
+=>10
+print(value2)
+=>없음
+
+4. 딕셔너리 key가 존재하는지 확인
+x = {"A" : 15, "B" : "20"}
+if "A" in x: 
+  x['A']+=1
+	print(x["A"])
+  => 16
+else:    
+  x['A']=0
+
+
+
