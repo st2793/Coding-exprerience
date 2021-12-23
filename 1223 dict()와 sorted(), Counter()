@@ -65,3 +65,21 @@ else:
 
 
 
+4. Counter()
+from collections import Counter
+
+a=[1,2,1,6,7,7,1]
+
+x=Counter(a)
+#dict()과 같다고 보면됨. for문 items(),keys(),values()가능
+for i,v in x.items():
+    print(i,v)
+=>
+1 3
+2 1
+6 1
+7 2
+
+print(max(x.values()))
+=> 3 
+
