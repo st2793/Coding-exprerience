@@ -1,0 +1,29 @@
+sort()를 지속적으로 사용하면서 min과 max를 구해야할 떄는 sort()보다 heapq를 사용하면 효율적이다.
+
+import heapq as hq
+test=[1,2,3,4]
+hq.heapify(test)
+hq.heappush(test, 345)
+
+a=hq.heappop(test)
+
+print(a)
+=> 최솟값 1 출력
+
+
+test=[1,2,3,4]
+test=-1*test
+hq.heapify(test)
+hq.heappush(test, -345)
+a=-1*hq.heappop(test)
+
+print(a)
+=> 최댓값 345 출력
+
+
+https://programmers.co.kr/learn/courses/30/lessons/42626?language=python3
+
+
+
+
+
