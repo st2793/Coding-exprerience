@@ -76,6 +76,10 @@ def solution(s):
 '''
 
 
+==> [].pop(0) 할바엔 deque를 만들면 효율성이 증대하니 반드시 deque를 활용하자
+==> [].pop(index)는 [deque].remove('원소값')으로 가능하다. 
+
+
 # 더 좋은 풀이. while 문은 n번 반복해야 하지만, for문으로 한큐에 처리하면 복잡도가 줄어든다
 
 def solution(s):
