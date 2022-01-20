@@ -1,0 +1,100 @@
+출처 : https://programmers.co.kr/learn/courses/30/lessons/87377#qna
+
+
+잘못된 풀이 
+def solution(line):
+    star=[]
+    sx=200000
+    bx=-200000
+    sy=200000
+    by=-200000
+    
+    for i in range(len(line)-1):
+        a,b,c=line[i]
+        for j in range(i+1, len(line)):
+            d,e,f=line[j]
+            mo=(a*e-b*d)
+            if mo==0:
+                continue
+                
+            x=(b*f-c*e)/mo
+            y=(c*d-a*f)/mo
+            
+            if x!=int(x) or y!=int(y):
+                continue
+            star.append([x,y])
+            if x<sx:
+                sx=x
+            if x>bx:
+                bx=x
+            if y<sy:
+                sy=y
+            if y>by:
+                by=y
+                    
+    res=[['.']*(int(bx-sx)+1) for _ in range(int(by-sy)+1)] 
+    for i in star:
+        x,y=i[0],i[1]
+        res[int(by-y)][int(x-sx)]='*'
+    answer = []
+    
+    for x in res:
+        answer.append(''.join(x))
+    return answer
+    
+    
+    
+    =========================================================================================
+    시간초과
+    =========================================================================================
+    
+    
+    2. 정답
+    
+    def solution(line):
+    star=[]
+    INF = float('inf')
+    sx,bx,sy,by=INF,-INF,INF,-INF
+
+    
+    
+    for i in range(len(line)-1):
+        a,b,c=line[i]
+        for j in range(i+1, len(line)):
+            d,e,f=line[j]
+            mo=(a*e-b*d)
+            if mo==0:
+                continue
+                
+            x=(b*f-c*e)/mo
+            y=(c*d-a*f)/mo
+            
+            if x!=int(x) or y!=int(y):
+                continue
+            star.append([x,y])
+            if x<sx:
+                sx=x
+            if x>bx:
+                bx=x
+            if y<sy:
+                sy=y
+            if y>by:
+                by=y
+                    
+    res=[['.']*(int(bx-sx)+1) for _ in range(int(by-sy)+1)] 
+    for i in star:
+        x,y=i[0],i[1]
+        res[int(by-y)][int(x-sx)]='*'
+    answer = []
+    
+    for x in res:
+        answer.append(''.join(x))
+    return answer
+    
+    =========================================================================================
+    =========================================================================================
+    
+    3. 정리
+    
+     1) if ~ then 조건절만 신경쓰지말고 조건절 pass일경우 'continue'를 활용하자
+     2) int=2170000000 은 퍼포먼스적으로 적절하지 않다. INF=float('inf') 를 습관화하자.
