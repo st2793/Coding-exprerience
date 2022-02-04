@@ -1,21 +1,61 @@
 이진검색 오류?? (틀린 풀이)
-A,B,C=map(int,input().split()) lt=1 rt=2100000000
+import sys
+from collections import Counter
+sys.stdin=open('a.txt','r')
+#  A: 고정비용, B: 가변비용, C: 노트북 가격
+A,B,C=map(int,input().split())
+# 손익분기점에 해당하는 노트북의 대수를 n이라하자. 이진탐색을통해 최소분기점에 해당하는 노트북 대수를 구할예정이다.
+# 최소생산 수량 1대, 가장 많이 생산했을때의 최대입력값인 21억대를 시작점 lt, 끝점 rt로 잡았다.
+lt=1
+rt=2100000000
 
-if (A+Brt)>Crt: lt=-1
 
-else: cnt = 0 while lt<=rt: cnt+=1 mid=(lt+rt)//2
+# 가변비용(B) >= 노트북 가격(C)인 경우 당연히 노트북을 아무리 생산해도 손익분기점을 넘을 순 없다.
+# 그러나 노트북 생산수량이 21억으로 한정되있으니, 21억대를 초과하는 노트북을 생산했을때
+# 손익분기점을 넘기는 만일의 경우를 대비해서 최대 생산수량인 21억대를 생산했을때 이익이 발생하지 않는다면 -1값을 리턴한다
+# 손익분기점 : 고정비용(A)+가변비용(B)*노트북생산수량(n) = 노트북 가격(C)*노트북생산수량(n)
+# 21억대의 노트북을 생산해도 손익분기점을 죽어도 못넘기는경우 -1리턴
+if (A+B*rt)>C*rt:
+    print(-1)
 
-    cost_sum=A+B*mid
-    cost=cost_sum/mid
-    if cost<C:
-        if rt==mid:
+# 노트북을 21억생산대 생산했을때 이익이 발생하는 경우
+else:
+    n = (lt + rt) // 2
+
+    while lt<rt:
+
+        #이진탐색을 위한 중간값을 노트북 생산 수량(n)이라고 가정하자
+        n = (lt + rt) // 2
+        #product_cost : 생산비용 합계
+        product_cost=A+B*n
+        # profit : 노트북 총 판매수익
+        profit=C*n
+        #생산비용보다 노트북 판매이익이 같거나 더크다. => 중간값으로 잡은 노트북 생산대수를 줄였을때도 답이 될 수 있다.
+        # 손익분기점을 낼수 있는 노트북 생산량은 자연수가 아닐수도 있다. n= (A/(C-B)).
+
+        if product_cost<profit:
+            rt=n
+        #  product_cost==profit일 경우 손익분기점은 자연수이나, 무한루프에 빠지기때문에 while break
+        elif product_cost==profit:
             break
-        rt=mid
-    elif cost>=C:
-        #print('cost 가 더크거나 같다 => mid가 증가해야함.')
-        lt=mid+1
-print(lt)
+        # 노트북 판매이익보다 노트북 생산비용이 더크다. => 중간값으로 잡은 노트북 생산대수 이하는 무조건 답이 안되니 생산대수를 늘려야한다.
+        elif product_cost>profit:
+            #print('cost 가 더크거나 같다 => mid가 증가해야함.')
+            lt=n+1
+        #elt==rt인경우
 
+        if lt==rt:
+            n=(lt+rt)/2
+            product_cost = A + B * n
+            profit = C * n
+            #lt와 rt가 같을때는 n=lt=rt 가 된다. 이떄의 생산비용이  판매이익을 비교한다.
+            #생산비용이 판매이익보다 크거나 같으면 +1을 했을때 노트북의 대수가 손익분기점이 된다.
+            if product_cost>=profit:
+                pass
+            #판매이익이 생산비용보다 크다면 n자체가 손익분기점이 된다. 67라인 코드의 통일성을 위해 -1해주자.
+            else:
+                n=n-1
+    print(int(n+1))
 =============================답의 오류를 찾고 수정할것==============================================
 
 
