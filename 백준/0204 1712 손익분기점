@@ -1,0 +1,27 @@
+이진검색 오류?? (틀린 풀이)
+A,B,C=map(int,input().split()) lt=1 rt=2100000000
+
+if (A+Brt)>Crt: lt=-1
+
+else: cnt = 0 while lt<=rt: cnt+=1 mid=(lt+rt)//2
+
+    cost_sum=A+B*mid
+    cost=cost_sum/mid
+    if cost<C:
+        if rt==mid:
+            break
+        rt=mid
+    elif cost>=C:
+        #print('cost 가 더크거나 같다 => mid가 증가해야함.')
+        lt=mid+1
+print(lt)
+
+=============================답의 오류를 찾고 수정할것==============================================
+
+
+실제 풀이방법은 매우 간단했다.
+멍청하게 풀지말고, 수학을 활용하자.. 알고리즘!=수학 이라는 생각을 버립시다.
+A+B*n(노트북수)=C*n
+따라서 n=A/(C-B)
+n개보다 1개만 크면 손익분기점을 넘기니
+n==A//(C-B)  +1 
