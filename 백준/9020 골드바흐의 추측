@@ -1,0 +1,99 @@
+1) 시간초과 코드
+def isPrime(n):
+    for i in range(2, int(n ** (1 / 2)) + 1):
+        if n % i == 0:
+            return False
+
+    else:
+        return True
+
+
+
+T=int(input())
+nums=[]
+for i in range(T):
+    n=int(input())
+    nums.append(n)
+n=max(nums)
+x=[0]*(n+1)
+prime=[]
+for i in range(2,n+1):
+    if isPrime(i):
+        prime.append(i)
+for x in nums:
+    maxx=n
+    res=[]
+    for y in prime:
+       if y>=x:
+           break
+       else:
+           diff=x-2*y
+           if diff<0:
+               break
+           if x-y in prime and diff<maxx:
+               res=[y,x-y]
+               maxx=diff
+    print(res[0],res[1])
+    
+=======================================================================================================================================
+
+2)다시 수정한코드 
+
+
+T=int(input())
+nums=[]
+for i in range(T):
+    n=int(input())
+    nums.append(n)
+n=max(nums)
+x=[0]*(n+1)
+prime=[]
+for i in range(2,n+1):
+    if x[i]==0:
+        prime.append(i)
+        for j in range(2*i,n+1,i):
+            x[j]=1
+
+ '''
+for xx in nums:
+    maxx=n
+    res=[]
+    for y in prime:
+       if y>=xx:
+           break
+       else:
+           diff=xx-2*y
+           if diff<0:
+               break
+           if xx-y in prime and diff<maxx:
+               res=[y,xx-y]
+               maxx=diff
+    print(res[0],res[1])
+'''
+ #위에는  기존코드. 나는 소수를 찾고, 그소수를 for문으로 돌려서 합이 되는지 찾고자 하였다.
+ #그러나 소수가 많을때, 일일이 비교를 해야하고, 합이 다름에도 in함수를 써서 불필요하게 모든 prime 배열에대해
+ #xx-y in prime 비교를 해야하는 번거로움이 생긴다.
+
+
+ #개정한코드
+ #발상의 전환이다. 기존에 사용하던 in 함수대신 N(K) flag값으로 비교.
+ #소수를 먼저찾는게 아니라 중간값을 찾은뒤, 소수를 찾는것이 더 빠르고 현명하다.
+for y in nums:
+    a=y//2
+    b=a
+    while True:
+        #if a in prime and b in prime: 는 O(N) 비교를 2번씩이나 하는 번거로운 코드임
+        #기존에 사용한 x[a]를 사용하는 것이 현명함.
+        if x[a]==0 and x[b]==0:
+            print(a,b)
+            break
+        else:
+            a-=1
+            b+=1
+            
+            
+=============================================================================================
+정리:  A이고 B인 조건을 찾으라는 문제에서
+A(a,b는 소수)를 먼저 찾고 B(a,b의 합은 n)를 찾는지
+B(a,b의 합은 n)를 먼저 찾고 A(a,b는 소수)를 찾을지
+관점을 바꾸면 로직도 달라지고, 더 간결해질 수 있다.
