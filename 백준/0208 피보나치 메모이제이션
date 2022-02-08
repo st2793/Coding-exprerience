@@ -1,0 +1,25 @@
+# 내가 푼 풀이
+n=int(input())
+
+def DFS(n):
+    if n==0 or n==1:
+        return n
+    else:
+        return DFS(n-2)+DFS(n-1)
+print(DFS(n))
+
+
+# 메모이제이션으로 풀어볼것. 
+# 만약 n이 40보다 컸다면 시간초과로 틀렸을 것이다.
+#내가 푼풀이는 DFS(40)=DFS(39)+DFS(38) 즉 => D(38)에대해 다시 여러번 2번이나 구해야함. 하위로 내려갈수록 더 효율성이 저하됨.
+ 
+
+n=int(input())
+dic={0:0, 1:1}
+#메모이제이션
+def DFS(n):
+    if n in dic:
+        return dic[n]
+    dic[n]=DFS(n-1)+DFS(n-2)
+    return dic[n]
+print(DFS(n))
