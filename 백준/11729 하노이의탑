@@ -1,0 +1,97 @@
+개념이해하는 정말 오랜시간이 걸렸다.
+
+일단 문제를 제대로 읽지않음.
+
+작은 원판위에 큰 원판을 쌓을 수 없는데 이를 오인하여 코드를 요렇게 짰었다.
+
+
+1. 잘못짠 코드
+
+n=int(input())
+cnt=0
+def DFS(n):
+    #dy는 메모이제이션을 위한 함수. 탑이동정보를 저장할 것임. (start, end)
+    dy = [0] * (n + 1)
+    dy[1] = [(1, 3)]
+
+    global cnt
+    if n==1:
+        return dy[1]
+    #
+    else:
+        #dy[n]=초기화
+        dy[n]=[]
+        #a,b,c는 1,2,3 장대 스택임.
+        #a는 최초 [n,n-1,n-2,,,,,,,2,1]스택으로 저장되있음.
+        a=[i for i in range(n,0,-1)]
+        b=[]
+        c=[]
+        for i in range(len(a)-1,-1,-1):
+            # a[i]가 n-2가 나올때까지 1 -> 3번째 장대로 이동시킴
+            if a[i]<n-1:
+                c.append(a.pop())
+                dy[n].append((1, 3))
+            # a스택값 n-1은 1 -> 2번째 장대로 이동시킴
+            elif a[i]==n-1:
+                b.append(a.pop())
+                dy[n].append((1,2))
+        #print(a)
+        #print(b)
+        #print(c)
+        # 현재 장대 상태 a=[n], b=[n-1], c=[n-2,......3,2,1]
+        for x in c:
+            #c장대 값을 차례로 C장대로 이동시킴. a=[n], b=[n-1,n-2,......3,2,1], c=[]
+            dy[n].append((3,2))
+            b.append(c.pop())
+        #a값을 c로 이동시킴 a=[], b=[n-1,n-2,......3,2,1], c=[n]
+        dy[n].append((1,3))
+        c.append(a.pop())
+        #b 장대값은 DFS(n-1)에서 a,b장대가 바뀐것과 동일함.
+        tmp=DFS(n-1)
+        for x,y in tmp:
+            if x==1:
+                x=2
+            elif x==2:
+                x=1
+            if y==1:
+                y=2
+            elif y==2:
+                y=1
+            dy[n].append((x,y))
+        return dy[n]
+#DFS값은 장대의 이동튜플
+ans=DFS(n)
+print(len(ans))
+for x,y in ans:
+    print(x,y)
+    
+    
+  2. 하노이의 탑 코드는 점화식으로푸는 코드이다.
+  
+n=int(input())
+cnt=0
+res=[]
+def hanoi(n,start,end,other):
+    global  cnt
+    if n==1:
+        #문제에서 1,3이라고 하드코딩하면 틀린다.. 위치에따라 다르잖아..
+        res.append((start,end))
+        cnt+=1
+    else:
+        cnt += 1
+        hanoi(n-1, start, other, end) #start->other 로 n-1개 이동
+        res.append((start,end)) # 1은 start->end로 이동
+        hanoi(n-1,other,end,start) #n-1개 other->start로 이동
+
+
+
+hanoi(n,1,3,2)
+
+print(len(res)) #움직이는 횟수 출력
+for x,y in res:
+    print(x,y)
+    
+    
+* 가장 쉽게설명한 블로그 풀이와 영상!!
+
+https://ji-gwang.tistory.com/226
