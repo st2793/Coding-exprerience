@@ -1,0 +1,33 @@
+#시간초과한 내풀이 O(N2)
+import sys
+n=int(sys.stdin.readline())
+board=list(map(int,(sys.stdin.readline()).split()))
+for x in board:
+	a=set()
+	for i in range(n):
+		if x>board[i]:
+			a.add(board[i])
+	print(len(a), end=' ')
+  
+#개선된 시간초과한 풀이 O(N)
+import sys 
+
+N = int(sys.stdin.readline()) 
+arr = list(map(int,sys.stdin.readline().split())) 
+arr2 = [] 
+arr2 = list(set(arr)) 
+arr2.sort() 
+for i in range(len(arr)): 
+  arr[i]=arr2.index(arr[i]) 
+print(*arr,sep=" ")
+
+#내가 맞은 풀이 O(1)
+import sys
+n=int(sys.stdin.readline())
+board=list(map(int,(sys.stdin.readline()).split()))
+for x in board:
+	a=set()
+	for i in range(n):
+		if x>board[i]:
+			a.add(board[i])
+	print(len(a), end=' ')
