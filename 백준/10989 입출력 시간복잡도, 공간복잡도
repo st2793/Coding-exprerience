@@ -1,0 +1,41 @@
+1.문제에 대해 시간복잡도만 고려했는데, 공간복잡도도 고려해야함을 깨우쳐준 문제.
+=> append함수보다 list함수를 선언하는 것이 공간효율성이 더 좋다. 
+
+2.또한 내가 주로 사용하는 input()과 print()의 개선이 필요함을 알려준 문제.
+=>  print(i) <<< sys.stdout.write(str(i)+'\n')
+=> input() <<< sys.stdin.realine()
+
+3. 메모리가 매우 작은 문제는 주석또한 메모리를 잡아먹어 통과가 안될 수 있으니, 제출시 시간이나 메모리초과시 
+주석도 지워줘야함을 꺠우쳐준 문제
+
+
+import sys
+#input()보다 sys.stdin.readline()이 더 시간효율성이 큼.
+#n=int(input())
+n=int(sys.stdin.readline())
+
+#for문 속에 append를 사용하게되면 메모리 재할당이 이루어져 메모리가 효율적이지 못하다.
+#공간복잡도를 알았어야하는 문제..
+'''
+l=[]
+for i in range(n):
+    l.append(int(input()))
+l.sort()
+for ll in l:
+    print(ll)
+
+'''
+# 리스트를 할당해주는 것이 append보다 공간효율적으로 더 좋다.
+l=[0]*10001
+
+for _ in range(n):
+    l[int(sys.stdin.readline())]+=1
+
+for i in range(10001):
+    if l[i]!=0:
+        for j in range(l[i]):
+            #print(i)
+            sys.stdout.write(str(i)+'\n')
+
+
+         )
