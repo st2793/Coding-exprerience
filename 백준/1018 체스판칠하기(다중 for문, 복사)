@@ -1,0 +1,219 @@
+1. 내풀이 오답
+import sys
+sys.stdin=open('a.txt','r')
+
+n, m = map(int, input().split())
+board = []
+
+
+def makeBCount(box):
+    bcopy = []
+    for x in box:
+        bcopy.append(x)
+    cnt = 0
+    # 시작값이 B일때
+    if bcopy[0][0] != 'B':
+        cnt += 1
+        bcopy[0][0] = 'B'
+    for i in range(8):
+        if i != 0 and bcopy[i - 1][0] == bcopy[i][0]:
+            cnt += 1
+            if bcopy[i][0] == 'W':
+                bcopy[i][0] = 'B'
+            else:
+                bcopy[i][0] = 'W'
+        for j in range(1, 8):
+            if bcopy[i][j] == bcopy[i][j - 1]:
+                cnt += 1
+                if bcopy[i][j] == 'W':
+                    bcopy[i][j] = 'B'
+                else:
+                    bcopy[i][j] = 'W'
+    return cnt
+
+
+def makeWCount(box):
+    bcopy = []
+    for x in box:
+        bcopy.append(x)
+    cnt = 0
+    # 시작값이 B일때
+    if bcopy[0][0] != 'B':
+        cnt += 1
+        bcopy[0][0] = 'B'
+    for i in range(8):
+        if i != 0 and bcopy[i - 1][0] == bcopy[i][0]:
+            cnt += 1
+            if bcopy[i][0] == 'W':
+                bcopy[i][0] = 'B'
+            else:
+                bcopy[i][0] = 'W'
+        for j in range(1, 8):
+            if bcopy[i][j] == bcopy[i][j - 1]:
+                cnt += 1
+                if bcopy[i][j] == 'W':
+                    bcopy[i][j] = 'B'
+                else:
+                    bcopy[i][j] = 'W'
+    return cnt
+
+
+for i in range(n):
+    x = list(input())
+    board.append(x)
+
+# 8x8 박스구현
+res=64
+for i in range(n - 7):
+    for j in range(m - 7):
+        boxes = []
+        for k in range(i, i + 8):
+            tmp = board[k][j:j + 8]
+            boxes.append(tmp)
+        tmpMin = min(makeBCount(boxes), makeWCount(boxes))
+        res = min(tmpMin, res)
+print(res)
+
+
+=======================================================================================================================
+10-11, 36-37 Line  얕은복사로 인해 makeBCount(box)함수로 인자 box값이 변경되면 72Line의 원래 인자값인 boxes값이 변경되고
+makeWCount(box) 함수가 동작할때는 원래의 boxes값이 아니라 변경이 이루어진 boxes값이 전달되므로, 답이 상이하게 나온다.
+즉, 얕으복사가 이루어진것이원인이다!!
+행으로 [a.b.c.d.] 인자를 받으니 얕은복사가 이루어진것이다.
+따라서 깊은복사가 필요할떄는 원소하나하나를받도록하자. 
+
+=======================================================================================================================
+
+
+2. 내풀이(수정)
+
+import sys
+sys.stdin=open('a.txt','r')
+n, m = map(int, input().split())
+board = []
+
+
+def makeBCount(box):
+    bcopy = []
+    for i in range(8):
+        tmp=[]
+        for j in range(8):
+            tmp.append(box[i][j])
+        bcopy.append(tmp)
+    '''
+        이것도 box[x] 그대로 대입하니 얕은복사다.
+        위처럼 개별 원소하나씩 꺼내줘야함
+        bcopy=[]
+        for x in range(8):
+        bcopy.append(box[x])
+    '''
+    cnt = 0
+    # 시작값이 B일때
+    if bcopy[0][0] != 'B':
+        cnt += 1
+        bcopy[0][0] = 'B'
+    for i in range(8):
+        if i != 0 and bcopy[i - 1][0] == bcopy[i][0]:
+            cnt += 1
+            if bcopy[i][0] == 'W':
+                bcopy[i][0] = 'B'
+            else:
+                bcopy[i][0] = 'W'
+        for j in range(1, 8):
+            if bcopy[i][j] == bcopy[i][j - 1]:
+                cnt += 1
+                if bcopy[i][j] == 'W':
+                    bcopy[i][j] = 'B'
+                else:
+                    bcopy[i][j] = 'W'
+    return cnt
+
+
+def makeWCount(box):
+    bcopy = []
+    for i in range(8):
+        tmp=[]
+        for j in range(8):
+            tmp.append(box[i][j])
+        bcopy.append(tmp)
+    cnt = 0
+    # 시작값이 W일때
+    if bcopy[0][0] != 'W':
+        cnt += 1
+        bcopy[0][0] = 'W'
+    for i in range(8):
+        if i != 0 and bcopy[i - 1][0] == bcopy[i][0]:
+            cnt += 1
+            if bcopy[i][0] == 'W':
+                bcopy[i][0] = 'B'
+            else:
+                bcopy[i][0] = 'W'
+        for j in range(1, 8):
+            if bcopy[i][j] == bcopy[i][j - 1]:
+                cnt += 1
+                if bcopy[i][j] == 'W':
+                    bcopy[i][j] = 'B'
+                else:
+                    bcopy[i][j] = 'W'
+    return cnt
+
+
+for i in range(n):
+    x = list(input())
+    board.append(x)
+# 8x8 박스구현
+
+res=64
+for i in range(n - 7):
+    for j in range(m - 7):
+        boxes = []
+        for k in range(i, i + 8):
+            tmp = board[k][j:j + 8]
+            boxes.append(tmp)
+        tmpMin = min(makeBCount(boxes), makeWCount(boxes))
+        res = min(tmpMin, res)
+print(res)
+
+=======================================================================================================================
+10-14, 46-50 Line에서 원소 하나하나 값을 전달받아 깊은복사를 이루었다.
+=======================================================================================================================
+
+3. 모범답안 
+
+
+import sys
+sys.stdin=open('a.txt','r')
+N, M = map(int, input().split())
+board = list()
+for i in range(N):
+    board.append(input())
+repair = list()
+for i in range(N-7):
+    for j in range(M-7):
+        first_W = 0
+        first_B = 0
+        for k in range(i,i+8):
+            for l in range(j,j + 8):
+                #홀짝으로 W,B를 표현
+                if (k + l) % 2 == 0:
+                    # 행열 합이 짝수이므로, 처음시작이 W일때
+                    if board[k][l] != 'W':
+                        first_W = first_W+1
+                    # 행열 합이 짝수이므로, 처음시작이 B일때
+                    if board[k][l] != 'B':
+                        first_B = first_B + 1
+                else:
+                    # 행열합이 짝수이고 처음시작이 W일때, 행열 합이 홀수인경우는 B로 시작한다.   
+                    if board[k][l] != 'B':
+                        first_W = first_W+1
+                    # 행열합이 짝수이고 처음시작이 B일때, 행열 합이 홀수인경우는 W로 시작한다. 
+                    if board[k][l] != 'W':
+                        first_B = first_B + 1
+        repair.append(first_W)
+        repair.append(first_B)
+=======================================================================================================================
+3중,4중 이상 for 문에 익숙해지지 않았기에 잘 사용하지못한케이스임. 
+다중 for 문에 익숙해지자! 
+=======================================================================================================================
+        
+       
