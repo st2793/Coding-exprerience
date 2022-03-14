@@ -1,0 +1,100 @@
+1. 시간초과 풀이
+import sys
+numbers=[]
+while True:
+    tmp=int(sys.stdin.readline().rstrip())
+    if tmp!=0:
+        numbers.append(tmp)
+    else:
+        break
+
+maxx=max(numbers)
+isPrime=[0]*(maxx+1)
+prime=[]
+for i in range(2,maxx+1):
+    if isPrime[i]==0:
+        prime.append(i)
+        for j in range(i,maxx+1,i):
+            isPrime[j]=1
+
+for number in numbers:
+    for x in prime:
+        if number-x in prime:
+            print(number,'=',x,'+',number-x)
+            break
+    else:
+        print("Goldbach's conjecture is wrong.")
+=> if number-x in prime 과 같이 배열에서 있는지 찾는것은 O(N) 이기때문에 비효율적이다.
+
+
+=============================================================================
+2. 내가 풀은 풀이
+import sys
+numbers=[]
+while True:
+    tmp=int(sys.stdin.readline().rstrip())
+    if tmp!=0:
+        numbers.append(tmp)
+    else:
+        break
+
+maxx=max(numbers)
+isPrime=[0]*(maxx+1)
+prime=[]
+for i in range(2,maxx+1):
+    if isPrime[i]==0:
+        prime.append(i)
+        for j in range(i*2,maxx+1,i):
+            isPrime[j]=1
+
+for number in numbers:
+    #print(number)
+    for x in prime:
+        if number>x and isPrime[number-x]==0:
+            print(number,'=',x,'+',number-x)
+            break
+    else:
+        print("Goldbach's conjecture is wrong.")
+
+=> isPrime[number-x]==0 으로 확인한다. 또한 입력값중 가장 큰값의 소수들을 구한것이므로 number-x<0 작은경우는 number>x로거른다. 
+
+
+===================================================================================
+3. 최적화된 풀이
+
+
+import sys
+numbers=[]
+while True:
+    tmp=int(sys.stdin.readline().rstrip())
+    if tmp!=0:
+        numbers.append(tmp)
+    else:
+        break
+
+maxx=max(numbers)
+length=int(maxx**(1/2))+1
+isPrime=[0]*(maxx+1)
+prime=[]
+for i in range(2,length+1):
+    if isPrime[i]==0:
+        for j in range(i*2,maxx+1,i):
+            isPrime[j]=1
+for i in range(2,len(isPrime)):
+    if isPrime[i]==0:
+        prime.append(i)
+
+for number in numbers:
+    #print(number)
+    for x in prime:
+        if number-x<=0:
+            break
+        if isPrime[number-x]==0:
+            print(number,'=',x,'+',number-x)
+            break
+    else:
+        print("Goldbach's conjecture is wrong.")
+
+=> 소수에서 int(sqrt(n))+1 까지 세는 것을 계속 햇갈려한다. sqrt(n)의 의미는 sqrt(n)* sqrt(n) = n이므로
+   1부터 int(sqrt(n))까지 만 곱해보면 약수의 개수를 구할수 있다는 뜻이다.
+=> 이 말인 즉슨, 소수의 갯수를 구하는 에라토스테네스의 체에서도 sqrt(n)의 정수값까지만 배수를 곱하여 소수가 아닌값을 걸러주면 된다는 뜻이다.  
