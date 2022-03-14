@@ -1,0 +1,63 @@
+참고 : https://suri78.tistory.com/119
+
+# 안풀리는경우 코드를 따라써서 리뷰할 것. 
+
+
+# 1번쨰 풀이
+import sys
+sys.stdin=open('a.txt','r')
+N=int(sys.stdin.readline())
+power=[0,0,1]
+max_table=[0,0,1]
+min_table=[0,0,1]
+while (N<0 and power[-1]>N) or (N>0 and power[-1]<N):
+    if N<=max_table[-1] and N>=min_table[-1]:
+        break
+    power.append(power[-1] * (-2))
+
+    if power[-1]>0:
+        #print('power>0 ')
+        max_table.append(max_table[-2]+power[-1])
+        min_table.append(min_table[-1]+power[-1])
+       # print(power)
+       # print(max_table)
+       # print(min_table)
+    else:
+        #print('power<0 ')
+        max_table.append(max_table[-1]+power[-1])
+        min_table.append(min_table[-2]+power[-1])
+       # print(power)
+       # print(max_table)
+       # print(min_table)
+
+res=''
+now=N
+for idx in range(len(power)-1,1,-1):
+    if max_table[idx] >= now and min_table[idx]<=now:
+        res+='1'
+        now-=power[idx]
+    else:
+        res+='0'
+
+sys.stdout.write(res)
+
+===========================================================================================
+
+#2번쨰 풀이
+import sys
+sys.stdin=open('a.txt','r')
+N=int(sys.stdin.readline())
+res=''
+print(-13//2)
+print()
+while N!=0:
+    #-2로 나누어 떨어지는경우
+    if N%(-2)==0:
+        N=N/(-2)
+        res='0'+res
+    else:
+        N=N//(-2)+1
+        res='1'+res
+
+print(res)
+
