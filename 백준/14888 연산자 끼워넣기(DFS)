@@ -1,0 +1,74 @@
+1. DFS 풀이로 푼다면 굳이 순열 OR  조합등으로 경우의수를 넣고 완전탐색할 필요가없다.
+   DFS 알고리즘 상에서 알아서 반복하도록 설정하는게 BEST코드다.
+   
+
+2. 비효율적인 성공코드 (PYTHON3은 통과못하고 PYPY로만 통과됨)
+  * 비효율적인 이유는 DFS 코드상에서가 아닌 직접 PERMUTATION을 실행해놓고 완전탐색했기때문임. 경우의수만큼 메모리가 할당되고, FOR문이도는 낭비가 발생.
+  from itertools import permutations
+import sys
+n=int(sys.stdin.readline().rstrip())
+numbers=list(map(int,sys.stdin.readline().rstrip().split()))
+p,m,mul,d=map(int,sys.stdin.readline().rstrip().split())
+computings='+'*p + '-'*m + '*'*mul + '/'*d
+
+cases=list(permutations(computings))
+
+minx=1e9
+maxx=-1e9
+
+for case in cases:
+	res=numbers[0]
+	for i in range(n-1):
+		if case[i]=='+':
+			res+=numbers[i+1]
+		elif case[i]=='-':
+			res-=numbers[i+1]
+		elif case[i]=='*':
+			res*=numbers[i+1]
+		elif case[i]=='/':
+			res=int(res/numbers[i+1])
+	minx=min(minx,res)
+	maxx=max(maxx,res)
+
+print(maxx)
+print(minx)
+
+
+
+
+3. 효율적인코드(PHYTON3통과 코드)
+ * 불필요한 경우의수를 직접구하지 않음. 
+
+import sys
+input = sys.stdin.readline
+
+
+N = int(input())
+
+nums = list(map(int, input().split()))
+
+a, b, c, d = map(int, input().split())
+
+max_ans, min_ans = -sys.maxsize -1, sys.maxsize
+
+def solution(num, idx, add, sub, mul, div):
+    global max_ans, min_ans
+    if idx == N:
+        max_ans = max(max_ans, num)
+        min_ans = min(min_ans, num)
+        return 
+    
+    if add > 0:
+        solution(num + nums[idx], idx + 1, add - 1, sub, mul, div)
+    if sub > 0:
+        solution(num - nums[idx], idx + 1, add, sub - 1, mul, div)
+    if mul > 0:
+        solution(num * nums[idx], idx + 1, add, sub , mul -1, div)
+    if div > 0:
+        solution(int(num / nums[idx]), idx + 1, add, sub, mul, div -1)
+
+
+solution(nums[0], 1, a, b, c, d)
+print(max_ans)
+print(min_ans)
+  
