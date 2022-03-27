@@ -1,0 +1,99 @@
+ in  함수에대해 무조건 효율이 좋지 못할것이라는 고정관념으로 풀이가 어렵게 돌아가버렸다..
+ 
+ 1. 최초 틀린풀이(메모리 초과)
+ import sys
+a,b=input().split()
+board=[]
+board.append(int(a))
+b=int(b)
+def makeNum(N):
+    s=0
+    for num in N:
+        s+= int(num)**b
+    return str(s)
+
+flag=[0]*217000000
+flag[int(a)]=1
+
+while True:
+    a=makeNum(a)
+    if flag[int(a)]==0:
+        flag[int(a)]=1
+        board.append(int(a))
+    else:
+        for i in range(len(board)) :
+            if board[i]==int(a):
+                print(i)
+        else:
+            break
+
+2. dict를 활용한 다시푼풀이(정답)
+import sys
+a,b=input().split()
+board=[]
+board.append(a)
+b=int(b)
+def makeNum(N):
+    s=0
+    for num in N:
+        s+= int(num)**b
+    return str(s)
+flag=dict()
+flag[a]=1
+while True:
+    a=makeNum(a)
+    try:
+        if flag[a]:
+            for i in range(len(board)):
+                if board[i] == a:
+                    print(i)
+            else:
+                break
+    except:
+        flag[a] = 1
+        board.append(a)
+
+
+
+3. dict()를 활용한 다른사람의 풀이
+  * 나처럼 굳이 board를추가로 만들어 메로리를 낭비할 필요가 없었다. if dict().get()을 활용해 굳이 try~catch를 쓰지 않았다.
+a,p = input().split()
+p = int(p)
+d,cnt = dict(),1
+d[a] = cnt
+
+while True:
+    cnt += 1
+    hap = 0
+    for i in a:
+        hap += int(i)**p
+    a = str(hap)
+    
+    if d.get(a):
+        print(d.get(a)-1)
+        break
+    d[a] = cnt
+   
+   
+========================================================
+ 4. 그냥 떠올렸던 대로 풀면됐던 풀이!!
+ 
+ 
+ import sys
+sys.stdin=open('a.txt','r')
+a,b=map(int, input().split())
+nums=[a]
+while True:
+    tmp=0
+    for s in str(nums[-1]):
+        tmp+=int(s)**b
+
+    if tmp in nums:
+        break
+
+    nums.append(tmp)
+
+print(nums.index(tmp))
+
+ 
+ 
