@@ -1,0 +1,75 @@
+1. DFS/BFS 가능하면 시간 초과를 막기위해 BFS로 푼다. 
+
+2. 시간초과풀이(DFS)
+import sys
+from collections import deque
+
+dQ=deque()
+n,m,k,x=map(int,sys.stdin.readline().rstrip().split())
+isPassed=[0]*(n+1)
+board=[[] for _ in range(n+1)]
+for _ in range(m):
+    a,b=map(int,input().split())
+    board[a].append(b)
+
+def BFS(num,dis):
+    dq = deque(board[num])
+    dq2 = deque()
+    while dq:
+        num2=dq.popleft()
+        if isPassed[num2]==0:
+            isPassed[num2]=dis+1
+            dq2.append(num2)
+    for x in dq2:
+        BFS(x,dis+1)
+
+
+BFS(1,0)
+cnt=0
+for i in range(1,n+1):
+    if isPassed[i]==k:
+        print(i)
+        cnt+=1
+if cnt==0:
+    print(-1)
+
+
+
+3. 올바른풀이=> linkedList 활용.
+
+
+import sys
+from collections import deque
+
+dQ=deque()
+n,m,k,x=map(int,sys.stdin.readline().rstrip().split())
+isPassed=[-1]*(n+1)
+isPassed[x]=0
+
+board=[[] for _ in range(n+1)]
+for _ in range(m):
+    a,b=map(int,sys.stdin.readline().rstrip().split())
+    board[a].append(b)
+
+def BFS(num):
+    dq=deque([num])
+    while dq:
+        now=dq.popleft()
+        for next in board[now]:
+            if isPassed[next]==-1:
+                isPassed[next]=isPassed[now]+1
+                dq.append(next)
+
+ans=[]
+BFS(x)
+cnt=0
+for i in range(1,n+1):
+    if isPassed[i]==k:
+        ans.append(i)
+
+if ans:
+    ans.sort()
+    for x in ans:
+        print(x)
+else:
+    print(-1)
