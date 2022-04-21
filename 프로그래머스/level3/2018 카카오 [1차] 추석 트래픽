@@ -86,3 +86,48 @@ def solution(lines):
 
     
     return answer
+
+
+4. 프로그래머스 우수풀이(내풀이보다 속도가 10배정도빠름) (그런데 이해못함)
+
+def solution(lines):
+
+    #get input
+    S , E= [], [] 
+    totalLines = 0 
+    for line in lines:
+        totalLines += 1
+        (d,s,t) = line.split(" ")
+
+       ##time to float
+        t = float(t[0:-1])
+        (hh, mm, ss) = s.split(":")
+        seconds = float(hh) * 3600 + float(mm) * 60 + float(ss)
+        #E는 내풀이에서의 포인트 끝점인 point2와 동일
+        E.append(seconds + 1)
+        #S는 내풀이에서의 그래프의 시작점 sp와 동일(t는 ep에 해당)
+        S.append(seconds - t + 0.001)
+
+    #count the maxTraffic
+    S.sort()
+    #내풀이에서  curTraffic는 cnt,  maxTraffic은 answer
+    curTraffic = 0
+    maxTraffic = 0
+    countE = 0
+    countS = 0
+      #내풀이기준 E=point2, S=sp, t=ep
+    while((countE < totalLines) & (countS < totalLines)):
+        #countS와 countE를 while을 활용하여 index로 쓰는점을 보고배우자!
+        ###################################질문###################################
+        #포인트구간의 끝점 point2가 특정그래프의 시작점인 sp보다 큰경우 =>이때 왜 특정구간그래프가 포인트구간에 접했다고 봐야하는지이해안감. 그려보면 접촉하지 않는sp---ep p1---p2 인 경우도 존재하지 않나????
+        if(S[countS] < E[countE]):
+            #
+            curTraffic += 1
+            maxTraffic = max(maxTraffic, curTraffic)
+            countS += 1
+        else: ## it means that a line is over.
+            curTraffic -= 1
+            countE += 1
+
+    return maxTraffic
+
