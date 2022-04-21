@@ -43,3 +43,76 @@
 
 다음과 같이 소수첫째자리 부동소수 변수간의 합만 구한다고 한다면 오차는 저~~~멀리있는 0.kxxxxxxxxxxxxxn 언저리쯤되니까 round를 활용할 수 있다. 
 이번문제에서 활용할예정!! 아무리봐도 Decimal과 Fraction은 boolean으로 밖에 쓸수가 없는것같다.. 
+
+
+3. 코드리뷰(구현련문제라 코드가 길어  기존과 달리, 잘못푼 부분을 짚어가며 정리하겠다.)
+
+# 구현문제. 알고리즘보다 복잡문제해결능력위한 구현능력중요
+def solution(lines):
+    graphs=[]
+    points=[]
+    #1. 문자열 자르기 2019-09-015 불필요하니 hh:mm:s1s2.s3s4s5와 0.x1x2x3만 파싱
+    for line in lines:
+        line=line.split(' ')[1:]
+        # S:응답완료시간, T:처리시간
+        S=line[0].split(':')
+        hh=int(S[0])
+        mm=int(S[1])
+        ss=float(S[2])
+        #ss=int(ss*1000)/1000
+        
+        # 오답1: 부동소수점 연산에대한 개념이 부족하여헤맸다. 
+        #T=int(T*1000)/1000
+        #처음에 부동소수점 오차가나와서 당황해서 이런식으로 풀었는데, 옳지못한 풀이다. 왜냐하면 이와같은 접근은 1000을 곱하고 int화하기때문에 소숫점을 잘라버리기떄문에 '반올림'이 아닌 '버림'이기떄문에 혹시모를오차가 생길 수 있다. 
+        #부동소수점합 round를 활용하자. github 정리 참고
+        T=round(float(line[1][:-1])-0.001,3)
+        
+        
+        #2.[[시작1, 끝1], [시작2,끝2]....]로 파싱. 0.001s<=T<=3.000s
+        #끝 :  hh:mm:s1s2.s1s2s3
+        ep=[hh,mm,ss]
+        # 오답2: hh:mm:s1s2.s3s4s5 처리방안 오류 
+        # 최초생각 : 문자열을 : 으로 쪼갠뒤 각각의 숫자를 문자열로 인식하려고했다. 이렇게하면, 연산 시 단위를 76분처럼 초과하는경우의수를 각각처리해줘야한다. 총 8개(hh, mm,s1,s2,s3,s4,s5,s6)의 경우의 수가 생기는데, 자릿수 올려줄떄마다 문자와 숫자 타입을 왔다갔다하는 번거로움과 hh,mm은 단위가 60인데비해 s1s2는 합쳐서 60단위, s3~s6는 10단위라는 아주 괴상한 경우가 생긴다. 이런식으로 풀려면 아래와 같은 괴상한 수식이 생기고 예외처리해야한다. 
+        #  시작 :  hh:mm:(s1s2.s3s4s5(S)-x1.x2x3x4(T)+0.001)
+        
+        # 옳은풀이 : 각각의 시분초단위를 초로 환산하자
+        # ss-T+0.001,3 반올림처리
+        sp=[hh,mm,ss-T]
+        #sp,ep 초단위로 변경
+        ep=hh*3600+mm*60+ss
+        sp=round(ep-T,3)
+        #print(sp)
+        #print('초단위sp',sp)
+        #print('초단위ep',ep)
+        graphs.append([sp,ep])
+        points.append(ep)
+        points.append(sp)
+    #points 정렬    
+    points.sort()
+   # print("포인트",points)
+    #graphs 시작점 기준 정렬 
+    graphs.sort()
+    #print("그래프", graphs)
+    answer = 0
+    for point in points:
+        cnt=0
+        point2=round(point+1,3)
+        #각포인트 위치마다 최대치 합 확인
+        for graph in graphs:
+            sp,ep=graph
+            #print(sp,ep)
+            # 포인트구간은 point(p1)<=포인트구간<poin+1(p2)
+            # 그래프 그려서 경우의수 나눠
+#            if (point<sp and point2>sp) or point==sp or (sp<point<ep) or (ep==point):
+            # if (sp<=point2<=ep) 아니라 if (sp<point2<=ep) point 이상 point2 
+           # if (sp<point2<=ep) or (sp<=point<=ep) or (point<=sp and point2>=ep): 에서 (point<=sp and point2>=ep) 범위를 잘못나눔
+            if (sp<point2<=ep) or (sp<=point<=ep) or (point==sp) or (point==ep) or (point<sp and point2>sp):
+                cnt+=1
+                #print('cnt:',cnt,'point1:',point,'point2:',point+1,'graph',graph)
+            #break가 틀린포인트였음/....
+            #elif point>sp:
+             #   break
+        answer=max(answer,cnt)
+
+    
+    return answer
