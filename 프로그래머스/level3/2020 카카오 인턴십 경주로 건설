@@ -142,3 +142,59 @@ def solution(board):
     =>  new_cost가 visited[yy][xx]보다 크더라도 (yy, xx)의 다음 좌표로 이동할 때의 cost가 new_cost + 100 < visited[yy][xx] + 600일 수 있는데,
         이 경우가 고려가 안 되기에 테스트 25문제는 불통하게되었다! 꺾이는 부분이 직선보다 더 비용이 많아지는 관계를 생각안한 문제풀이임.
 ================================================================================================================================================================
+
+4. DFS 정답풀이
+# 패착 : DFS는 가지치기(백트래킹)를 잘해야하는데, 능력부족으로 더 쳐야할 곳을 못찾음. 
+# dfs를 통하여 종점까지 탐색을 하고, dp를 이용하여 도로의 최솟값을 계속 갱신하면 시간안에 값을 유추할 수 있다
+
+INF = 2222222222
+d = [(-1, 0), (0, 1), (1, 0), (0, -1)]
+
+#dp_size = 25는 문제 제한사항임.
+dp_size = 25
+dp = [[INF] * dp_size for _ in range(dp_size)]
+visited = [[False] * dp_size for _ in range(dp_size)]
+
+# 0 위로 직진, 1 오른쪽으로 직진, 2 아래로 직진, 3 왼쪽으로 직진
+direct = [0, 1, 2, 3]
+
+
+def solution(board) :
+    dp[0][0] = 0
+    #for dir, dd in enumerate(d):
+    #    print(dir, dd[0], dd[1])
+    # dfs(x,y,dir,board)
+    dfs(0, 0, 1, board)
+    dfs(0, 0, 2, board)
+
+    return dp[len(board) - 1][len(board) - 1]
+
+
+def dfs(h_x, h_y, h_dir, board) -> None:
+    for dir, dd in enumerate(d):
+        n_x, n_y = h_x + dd[0], h_y + dd[1]
+        n_dir = direct[dir]
+        n_cost = cost_calc(h_dir, n_dir)
+        if n_x < 0 or n_x >= len(board) or n_y < 0 or n_y >= len(board) or board[n_x][n_y] == 1:
+            continue
+        # 가장중요! 
+        if dp[n_x][n_y] < dp[h_x][h_y] + n_cost:
+            continue
+        #dp[n_x][n_y] >= dp[h_x][h_y] + n_cost 인경우임.
+        dp[n_x][n_y] = dp[h_x][h_y] + n_cost
+        dfs(n_x, n_y, n_dir, board)
+
+
+def cost_calc(h_dir, n_dir) -> int:
+    # 직선일때 cost
+    if h_dir == n_dir:
+        return 100
+
+    # 코너를 돌때 cost
+    else:
+        return 600
+
+====================================================================================================================================
+5. 
+
+
