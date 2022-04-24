@@ -1,0 +1,48 @@
+1. 문제해결전략 : DFS와 BFS를 활용하여 푸는문제. 누누히 말하지만, 구상을하는것은 DFS가 더 익숙하지만, 효율성으로 따지면, BFS로 풀어야한다. 
+                  이문제가 특히 DFS만 발상하면 시간초과로 틀리는 문제였다. dy를 활용하여 가지치기를 잘하는게 관건!
+                  즉 DFS+dy or BFS+dy로 풀어야한다. 
+                  (실제로 구글링이나 프로그래머스 올라온 소스코드들 대다수가 추가된 테스트케이스를 통과못하니 잘 선별하자.)
+ 
+ 2. 내오답 풀이(DFS)
+ # DFS로 풀수있는 문제발상은 가능하면 BFS로 풀어라. 시간초과로 두번고생안한다..
+# 이문제가 시간초과일수 밖에 없는이유를 BigO로 설명해줄수있는사람??
+'''
+directions=[[-1,0],[0,1],[1,0],[0,-1]]
+
+
+
+def solution(board):
+    res=217000000
+    dy=[]
+    n=len(board)
+    for _ in range(n):
+        dy.append([50000 for _ in range(n)])    
+    def DFS(y,x,direction,cost):
+        nonlocal res
+        if cost>=res:
+            return
+        if y==n-1 and x==n-1:
+            res=min(res,cost)
+            return
+
+        else:    
+            for i in range(4):
+                yy=y+directions[i][0]
+                xx=x+directions[i][1]
+
+                if 0<=yy<n and 0<=xx<n and board[yy][xx]==0:
+                    board[yy][xx]=1
+                    #직선거리100 획득상황
+                    if i==direction :
+                        
+                        DFS(yy,xx,direction,cost+100)
+                    #직선거리 100 +코너500 획득상황
+                    else:
+                         DFS(yy,xx,i,cost+600)
+                    board[yy][xx]=0
+             
+    n=len(board)
+    board[0][0]=1
+    DFS(0,0,1,0)
+    DFS(0,0,2,0)
+    return res    
