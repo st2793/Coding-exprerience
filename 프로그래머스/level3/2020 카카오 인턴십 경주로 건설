@@ -99,5 +99,46 @@ def solution(board):
     for x in board:
         print(x)
     return board[n-1][n-1]
-=> 답자체가 틀릴수밖에없음. 
+=> 본인이 나누는 조건절을 명확히 못하니, 당연히 답이 틀릴수밖에없음. 
 ===================================================================================================================================================================
+3.1. 내 풀이 보다 조금 더나아간 오답(BFS)
+
+from collections import deque
+
+def solution(board):
+    di = [0, 1, 0, -1]
+    dj = [1, 0, -1, 0]
+    N = len(board)
+    visited = [[-1] * N for _ in range(N)]
+    Q = deque()
+    Q.append([0, 0, 0, 0])
+    Q.append([0, 0, 0, 1])
+    visited[0][0] = 0
+    while Q:
+        now_cost, i, j, d = Q.popleft()
+        for k in range(4):
+            yy = i + di[k]
+            xx = j + dj[k]
+
+            # 경계체크. 벗어난 건 무시
+            if yy < 0 or xx < 0 or yy >= N or xx >= N:
+                continue
+            # 벽체크. 벽이면 무시
+            if board[yy][xx] == 1:
+                continue
+            # 뒤로가기 체크 직진하지 않으면 무시 => 반드시 양의방향으로만 나아간다는 보장이 없으므로 논리가 틀림.
+            if abs(k-d) == 2:
+                continue
+            cost = 100 if k == d else 600
+            new_cost = now_cost + cost
+            #나보다 좋은 풀이인 이유 : 한번지나갔는지 flag(visited) 값을 음수로 두고, 한번지나간 경우는 new_cost값중작은값으로 최소하하여 표현함
+            #-> 즉  visited[yy][xx]식에 방문여부(flag)+ new_cost(dy)값의 갱신을 동시에 표현함. 
+            if visited[yy][xx] == -1 or new_cost <= visited[yy][xx]:
+                visited[yy][xx] = new_cost
+                Q.append([new_cost, yy, xx, k]) 
+
+    return visited[N-1][N-1]
+    => 테스트케이스 25번만 불통
+    =>  new_cost가 visited[yy][xx]보다 크더라도 (yy, xx)의 다음 좌표로 이동할 때의 cost가 new_cost + 100 < visited[yy][xx] + 600일 수 있는데,
+        이 경우가 고려가 안 되기에 테스트 25문제는 불통하게되었다! 꺾이는 부분이 직선보다 더 비용이 많아지는 관계를 생각안한 문제풀이임.
+================================================================================================================================================================
