@@ -47,3 +47,57 @@ def solution(board):
 => 패착은 시간초과이다. 모든 케이스를 돌기때문에 허점은 없지만, 효율성에서 틀릴수밖에없다.
 
 ==============================================================================================================================
+ 3. 내오답 풀이(BFS)
+# 패착요인1 : bfs로 조건문 세분화하는 법을 모르겠음. 조건문이 명확하게 나누지 못해 계속틀림. bfs 기초문제부터 원리를익혀야한다. 
+# 패착요인2 : 꺾이는 부분이 직선보다 비용이 적은 경우를 전혀 고려못하고 있는 알고리즘이다. 에이설마..? 라고 생각했는데 확실하지 않으면 조건문포함해서 증명해야한다. 
+# 물론 패착요인1에의해 이미 멘탈이 나가서 고려해야한다는것만알았지, 실제로 코드에 녹일 엄두는 못냈다.
+from collections import deque
+def solution(board):
+    n=len(board) 
+    isVisited=[]
+    for _ in range(n):
+        isVisited.append([0 for _ in range(n)])
+   
+    directions=[[1,0],[0,1],[-1,0],[0,-1]]
+    dq=deque([[0,0,0,-500],[0,0,1,-500]])
+    isVisited[0][0]=1
+    ans=2170000000
+    while dq:
+        y,x,d,cost=dq.popleft()
+        if cost>=ans:
+            pass
+        elif y==n-1 and x==n-1:
+            ans=min(ans,cost)
+        
+        else:
+            yy=y+directions[d][0]
+            xx=x+directions[d][1]
+            # 1.방향전환없이 갈수있으면 직진하자. (여기서 어떤부분을 조건문으로 잡을지 머리로만 생각하니, 4시간 넘게 수정하였지만 틀려버림.. 손으로 필기하며 조건나누자)
+            if 0<=yy<n and 0<=xx<n and board[yy][xx]!=1 and isVisited[yy][xx]==0:
+                isVisited[yy][xx]=1
+                if board[yy][xx]==0:
+                    board[yy][xx]=board[y][x]+100
+                else:
+                    board[yy][xx]=min(board[yy][xx],board[y][x]+100)
+                dq.append([yy,xx,d,cost+100])  
+
+            # 2.방향전환이 필요한경우 (여기서 어떤부분을 조건문으로 잡을지 머리로만 생각하니, 4시간 넘게 수정하였지만 틀려버림.. 손으로 필기하며 조건나누자)
+            else:
+                for k in range(4):
+                    yy=y+directions[k][0]
+                    xx=x+directions[k][1]
+                    if 0<=yy<n and 0<=xx<n and board[yy][xx]!=1 and isVisited[yy][xx]==0:
+                        
+                        isVisited[yy][xx]=1
+                        if board[yy][xx]==0:
+                            board[yy][xx]=board[y][x]+600
+                        else:
+                            board[yy][xx]=min(board[yy][xx],board[y][x]+600)
+                        d=k
+                        dq.append([yy,xx,k,cost+600])  
+                        break
+    for x in board:
+        print(x)
+    return board[n-1][n-1]
+=> 답자체가 틀릴수밖에없음. 
+===================================================================================================================================================================
