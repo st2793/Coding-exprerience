@@ -1,7 +1,9 @@
+#1. 옳은풀이
+
 from collections import deque
 import sys
 sys.stdin=open('a.txt','r')
-
+# 출저 : https://2hs-rti.tistory.com/m/entry/%EB%B0%B1%EC%A4%80-2146%EB%B2%88-%EB%8B%A4%EB%A6%AC-%EB%A7%8C%EB%93%A4%EA%B8%B0-%ED%8C%8C%EC%9D%B4%EC%8D%AC
 #1.입력을 받으면서 바다인 위치를 따로 sea리스트에 넣는다
 
 #2.바다인 sea리스트를 전부 확인하면서 상하좌우가 땅(1) 이면 그위치를 bfs로 탐색을 시작
@@ -86,3 +88,181 @@ for a, b in sea:
     if can:
         bfs(a, b)
 print(result)
+
+
+#2. 틀린풀이 (1번풀이에서 놓쳐서헛짓거리하면 내코드가된다..)
+bfs를 두번써야하나,아이디어를 떠올리지못함.. 
+잘못된풀이 두가지 남긴다.
+import sys
+from collections import deque
+import copy
+sys.setrecursionlimit(10**7)
+sys.stdin=open('a.txt','r')
+input=sys.stdin
+n=int(input.readline().rstrip())
+board=[]
+for i in range(n):
+    tmp=list(map(int,input.readline().rstrip().split()))
+    board.append(tmp)
+dq=deque()
+for i in range(len(board)):
+    for j in range(len(board[i])):
+        if board[i][j]==1:
+            dq.append([i,j,1])
+dy=[-1,0,1,0]
+dx=[0,1,0,-1]
+
+
+def getIsland(country):
+    def DFS(y, x):
+        for i in range(4):
+            yy=y+dy[i]
+            xx=x+dx[i]
+            if 0<=yy<n and 0<=xx<n and cp[yy][xx]>=1:
+                cp[yy][xx]=0
+                DFS(yy,xx)
+
+    cp=copy.deepcopy(country)
+    visited = []
+    cnt=0
+    for _ in range(n):
+        visited.append([0 for _ in range(n)])
+
+    for i in range(n):
+        for j in range(n):
+            if cp[i][j] >= 1 :
+                cp[i][j] = 0
+                cnt += 1
+                DFS(i,j)
+
+    return cnt
+
+
+
+
+init=getIsland(board)
+
+
+'''
+while dq:
+    y,x,z=dq.popleft()
+    for i in range(4):
+        yy=y+dy[i]
+        xx=x+dx[i]
+        if 0<=yy<n and 0<=xx<n:
+            if board[yy][xx]==0:
+                board[yy][xx]=board[y][x]+1
+                dq.append([yy,xx,board[yy][xx]])
+    if val!=z:
+        val=z
+        nxt=getIsland(board)
+        if init!=nxt:
+            #여기서 board[x][y]랑 val 값이 다름을 알수있다.
+            #print(init,nxt,val,z)
+            print(val)
+            #init = nxt
+            sys.exit(1)
+'''
+def bfs():
+    val = 1
+    while dq:
+        y, x, z = dq.popleft()
+        for i in range(4):
+            yy = y + dy[i]
+            xx = x + dx[i]
+            if 0 <= yy < n and 0 <= xx < n:
+                if board[yy][xx] == 0:
+                    board[yy][xx] = board[y][x] + 1
+                    dq.append([yy, xx, board[yy][xx]])
+
+                    nxt = getIsland(board)
+                    if init != nxt:
+                         # 여기서 board[x][y]랑 val 값이 다름을 알수있다.
+                         print(val*2)
+                        return
+                else:
+                    #
+                    if val != z:
+                        val = z
+                        nxt = getIsland(board)
+                        if init != nxt:
+                            # 여기서 board[x][y]랑 val 값이 다름을 알수있다.
+                            print(init, nxt, val, z)
+                            for xyz in board:
+                                print(xyz)
+                            print(val)
+                            return
+bfs()
+
+
+
+
+
+
+'''
+
+import sys
+from collections import deque
+import copy
+sys.stdin=open('a.txt','r')
+input=sys.stdin
+n=int(input.readline().rstrip())
+board=[]
+for i in range(n):
+    tmp=list(map(int,input.readline().rstrip().split()))
+    board.append(tmp)
+dq=deque()
+for i in range(len(board)):
+    for j in range(len(board[i])):
+        if board[i][j]==1:
+            dq.append([i,j])
+dy=[-1,0,1,0]
+dx=[0,1,0,-1]
+
+
+def DFS(y,x,country,visited):
+    for i in range(4):
+        yy=y+dy[i]
+        xx=x+dx[i]
+        if 0<=xx<n and 0<=yy<n and country[yy][xx]==1 and visited[yy][xx]==0:
+            visited[yy][xx]=1
+            DFS(yy,xx,country,visited)
+        else:
+            return
+
+
+
+
+
+def getIsland(country):
+    visited = []
+    cnt=0
+    for _ in range(n):
+        visited.append([0 for _ in range(n)])
+    for i in range(n):
+        for j in range(n):
+            if country[i][j] == 1 and visited[i][j]==0:
+                visited[i][j]=1
+                cnt += 1
+                DFS(i,j,country,visited)
+
+    return cnt
+
+
+print(getIsland(board))
+
+==> 맞왜틀??!?!?!?!
+while dq:
+    y,x=dq.popleft()
+    for i in range(4):
+        yy=y+dy[i]
+        xx=x+dx[i]
+        if 0<=yy<n and 0<=xx<n:
+            if board[yy][xx]==0:
+                board[yy][xx]=board[y][x]+1
+                dq.append([yy,xx])
+                #섬의갯수가 줄었는지 확인필요
+
+
+
+'''
