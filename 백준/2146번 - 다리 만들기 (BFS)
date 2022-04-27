@@ -91,8 +91,85 @@ print(result)
 
 
 #2. 틀린풀이 (1번풀이에서 놓쳐서헛짓거리하면 내코드가된다..)
-bfs를 두번써야하나,아이디어를 떠올리지못함.. 
-잘못된풀이 두가지 남긴다.
+#bfs를 두번써야하나,아이디어를 떠올리지못함.. 잘못된풀이 두가지 남긴다.
+# 반드시 다시 맞왜틀 분석하자. 지역변수와 전역변수에대한 이해. (vistied[y][x] 와 boaard[y][x] 변수활용 간 혼동 점)등을 잘 파악학수 있음.
+
+####################################################
+# 오답풀이 1
+
+import sys
+from collections import deque
+import copy
+sys.stdin=open('a.txt','r')
+input=sys.stdin
+n=int(input.readline().rstrip())
+board=[]
+for i in range(n):
+    tmp=list(map(int,input.readline().rstrip().split()))
+    board.append(tmp)
+dq=deque()
+for i in range(len(board)):
+    for j in range(len(board[i])):
+        if board[i][j]==1:
+            dq.append([i,j])
+dy=[-1,0,1,0]
+dx=[0,1,0,-1]
+
+
+def DFS(y,x,country,visited):
+    for i in range(4):
+        yy=y+dy[i]
+        xx=x+dx[i]
+        if 0<=xx<n and 0<=yy<n and country[yy][xx]==1 and visited[yy][xx]==0:
+            visited[yy][xx]=1
+            DFS(yy,xx,country,visited)
+        else:
+            return
+
+
+
+def getIsland(country):
+    visited = []
+    cnt=0
+    for _ in range(n):
+        visited.append([0 for _ in range(n)])
+    for i in range(n):
+        for j in range(n):
+            if country[i][j] == 1 and visited[i][j]==0:
+                visited[i][j]=1
+                cnt += 1
+                DFS(i,j,country,visited)
+
+    return cnt
+
+print(getIsland(board))
+
+
+#==> 맞왜틀??!?!?!?!
+while dq:
+    y,x=dq.popleft()
+    for i in range(4):
+        yy=y+dy[i]
+        xx=x+dx[i]
+        if 0<=yy<n and 0<=xx<n:
+            if board[yy][xx]==0:
+                # 여기가 가장큰오인. BFS dq를 만들때 이전값에서 1더한만큼 popleft 한 값을산정하는 것 != 섬과 섬을 잇는최소한의 1수
+                # 전자는 주변의 토마토가익는 bfs같은문제/ 후자는 
+                board[yy][xx]=board[y][x]+1
+                dq.append([yy,xx])
+                #섬의갯수가 줄었는지 확인필요
+
+
+
+
+
+
+
+
+
+
+#######################################################
+# 오답풀이 2
 import sys
 from collections import deque
 import copy
@@ -143,7 +220,6 @@ def getIsland(country):
 init=getIsland(board)
 
 
-'''
 while dq:
     y,x,z=dq.popleft()
     for i in range(4):
@@ -151,8 +227,11 @@ while dq:
         xx=x+dx[i]
         if 0<=yy<n and 0<=xx<n:
             if board[yy][xx]==0:
+                #오답이유1 : 변수사용 혼동. 모범답안에서는 isvisted 값을 0,1로 두지않고 0,[1,2,3...]으로 두었는데, 나는 board[y][x]값을건들여버림...  
                 board[yy][xx]=board[y][x]+1
                 dq.append([yy,xx,board[yy][xx]])
+    #오답이유2 : board[y][x]값이 1,2,3,4,... 순으로 커질것이므로 1인경우만 다 돌려서, 섬이연결되었는지확인했으나, 이는 아까말한 것처러
+    #  BFS dq를 만들때 이전값에서 1더한만큼 popleft 한 값을산정하는 것 != 섬과 섬을 잇는최소한의 1수 이지만 전자가 후자를 찾는 논리라고 착감함. 
     if val!=z:
         val=z
         nxt=getIsland(board)
@@ -162,7 +241,7 @@ while dq:
             print(val)
             #init = nxt
             sys.exit(1)
-'''
+
 def bfs():
     val = 1
     while dq:
@@ -196,73 +275,3 @@ bfs()
 
 
 
-
-
-
-'''
-
-import sys
-from collections import deque
-import copy
-sys.stdin=open('a.txt','r')
-input=sys.stdin
-n=int(input.readline().rstrip())
-board=[]
-for i in range(n):
-    tmp=list(map(int,input.readline().rstrip().split()))
-    board.append(tmp)
-dq=deque()
-for i in range(len(board)):
-    for j in range(len(board[i])):
-        if board[i][j]==1:
-            dq.append([i,j])
-dy=[-1,0,1,0]
-dx=[0,1,0,-1]
-
-
-def DFS(y,x,country,visited):
-    for i in range(4):
-        yy=y+dy[i]
-        xx=x+dx[i]
-        if 0<=xx<n and 0<=yy<n and country[yy][xx]==1 and visited[yy][xx]==0:
-            visited[yy][xx]=1
-            DFS(yy,xx,country,visited)
-        else:
-            return
-
-
-
-
-
-def getIsland(country):
-    visited = []
-    cnt=0
-    for _ in range(n):
-        visited.append([0 for _ in range(n)])
-    for i in range(n):
-        for j in range(n):
-            if country[i][j] == 1 and visited[i][j]==0:
-                visited[i][j]=1
-                cnt += 1
-                DFS(i,j,country,visited)
-
-    return cnt
-
-
-print(getIsland(board))
-
-==> 맞왜틀??!?!?!?!
-while dq:
-    y,x=dq.popleft()
-    for i in range(4):
-        yy=y+dy[i]
-        xx=x+dx[i]
-        if 0<=yy<n and 0<=xx<n:
-            if board[yy][xx]==0:
-                board[yy][xx]=board[y][x]+1
-                dq.append([yy,xx])
-                #섬의갯수가 줄었는지 확인필요
-
-
-
-'''
