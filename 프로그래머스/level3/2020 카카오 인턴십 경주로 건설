@@ -245,5 +245,5 @@ def solution(board):
 
     return cost[N-1][N-1]       # 도착지점 비용 출력
     
-
+=> 틀린풀이 테스트케이스 넣으면 
     
