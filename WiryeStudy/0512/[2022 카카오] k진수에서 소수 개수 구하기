@@ -1,0 +1,74 @@
+# 2022 카카오 블라인트채용 k진수에서 소수구하기[Lv2]](https://programmers.co.kr/learn/courses/30/lessons/92335)
+
+
+## 틀린(못푼) 이유 
+* 한번풀어본 문제였으므로 못풀지 않음.
+
+## 문제해결 아이디어
+
+### 개념
+#### 에라토스테네스의 체 
+
+#### 소수(Prime) 구하기
+
+### 오류(오개념)
+*  없음
+
+### 핵심(알고리즘) 
+* dict() 자료구조의 링크트리스트 활용한다. **key 값은 열의 번호, value 값은 [ prev 열, next 열 ]**  (시간복잡도 O(1))
+* 이러한 방법을 사용하면 U, D 명령 시간복잡도는 최악의 경우에도 O(X)이고 C, Z 명령은 최악의 경우에도 O(1)을 유지한다. 따라서 효율성 테스트를 성공적으로 통과할 수 있음을사전에 알 수 있다. 
+
+
+
+## 소스코드 
+```python
+######## 정확도 100% , 효율성 0% 코드 ########
+def solution(n, k, cmd):
+    matrix=[i for i in range(n)]
+    cursor= k
+    deleted=[]
+    for command in cmd:
+        # C : 현재 선택된 행 제거
+        if command=='C':
+            deleted.append([cursor,matrix[cursor]])
+            #현재 커서가 맨끝항일때
+            if cursor==len(matrix)-1:
+                matrix.pop()
+                cursor-=1
+            else:
+                #@@효율성 문제가 되는코드1 : command 발생할때마다 O(N)
+                matrix.pop(cursor)
+        # Z : 가장최근에 삭제된 행 복구
+        elif command=='Z':
+            tmp=deleted.pop()
+            #@@효율성 문제가 되는코드2 : command 발생할때마다 O(N)
+            matrix.insert(tmp[0],tmp[1])
+            #커서 인덱스가 최근삭제한 인덱스보다 큰경우 
+            if cursor>=tmp[0]:
+                cursor+=1
+        else:
+            direction,x =command.split()
+            if direction=='U':
+                cursor-=int(x)
+            else:
+                cursor+=int(x)                    
+    answer=[0]*n
+    for x in matrix:
+        answer[x]=1
+    res=''
+    for x in answer:
+        if x==1:
+            res+='O'
+        else:
+            res+='X'  
+    return res
+```
+
+
+### 기타사항
+ 1. prev, cur, next 를 수직선상에 그리고, 코드를 리뷰하면 이해가 쉽다.
+ 2. 본 코드에는 dict()를 활용하였으나, 클래스를 활용한 링크드리스트 적용방법을 공부하자. 
+
+## 참고
+* [github 마크다운 : https://ffoorreeuunn.tistory.com/226](https://ffoorreeuunn.tistory.com/226)
+* [참고코드1 : https://kjhoon0330.tistory.com/entry/%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%A8%B8%EC%8A%A4-%ED%91%9C-%ED%8E%B8%EC%A7%91-Python](https://kjhoon0330.tistory.com/entry/%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%A8%B8%EC%8A%A4-%ED%91%9C-%ED%8E%B8%EC%A7%91-Python)
