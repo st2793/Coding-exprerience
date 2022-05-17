@@ -1,0 +1,124 @@
+# 프로그래머스 구명보트[Lv2]](https://programmers.co.kr/learn/courses/30/lessons/42885)
+
+
+## 틀린(못푼) 이유 
+* 구현은 매우 쉬워서 한번 푼 문제이지만, 속도를 줄이기위한 그리디(탐욕적) 알고리즘을 못떠올림.
+
+## 문제해결 아이디어
+
+### 개념
+
+#### 그리디 알고리즘 정의
+* 탐욕법이라고도부르며, 현재상황에서 가장좋은 것을 고르는 알고리즘.  어떠한 문제가 여러 단계로 나뉘어
+
+차례로 알고리즘이 이어지는 경우, 그 단계마다 가장 좋은 선택을 한다는 것을 의미.
+
+* 그러나 현재 상황에서 가장 좋은 것을 고르는 행위가 그 문제의 모든 경우의 수에서 발생하는 최적의 해라는 것을 보장하지 않는다.
+
+* <b>따라서 그리디 알고리즘의 해법은 정당성 분석, 최적의 해를 구할 수 있는지 검토하는 것이 중요하다. </b>
+
+* <b> 그리디 알고리즘은 만족하는 적합한 해를 찾는 방법이지 최적의 해를 찾는 방법은 아니다. 최적의 해를 찾기 위해서는 동적계획법(Dynamic Programming)을 사용한다.</b>
+
+
+ 
+#### 그리디 알고리즘 조건  
+* 각각의 값이 서로 다른 값에 영향을 주지 않을 것
+* 그리디 알고리즘으로 풀어낸 값이 모든 경우의 수에서 최적의 해일 것
+* 주어진 상위의 값이 하위 값의 배수일 것
+
+### 핵심(알고리즘) 
+1. 사람들을 무게순으로 정렬한다. 
+2. 몸무게가 가장 큰사람과 가장 작은 값을 더해 limit값과 비교한다음, 작으면 둘다 태우고, 크면 한사람만 태운다.(cnt변수)
+
+
+
+## 최초풀이(틀린풀이)
+```python
+# 불필요 조건문을 구현함. 즉 greedy하지 못하며, 비교구문이 더 많기때문에, 효율성을 통과못한 풀이 
+from collections import deque
+def solution(people, limit):
+    people.sort(reverse=True)
+    people=deque(people)
+    cnt=0
+    while people:
+        if len(people)>=2:
+            if people[0]+people[-1]<=limit:
+                cnt+=1
+                #가장 무거운 사람을 먼저 제거하지 않기때문에, 그리디하지못함. 가장 몸무게가 작은 사람부터 줄여나가니, 몸무게가 큰사람부터 제거하는 풀이보다 조건이 많아져서 최적의 풀이가 되지못하였음. 
+                people.popleft()
+                people.pop()
+            else:
+                # 가장작은 값과 두번쨰로 작은 몸무게를 합한값이 limit보다 작은지 비교하는건 불필요하다. 왜냐하면 가장작은 사람+ 가장 무게 많이 나가는 사람이 limit보다 큰경우, 몸무게가 큰사람만 제거하면, 무게가 가장 작은 사람들끼리는 언젠가 남게되면 위 조건으로 구해질거기때문에 비교할 필요가 없기떄문이다.  
+                # 불필요 인덱싱접근+불필요 pop처리로 효율성 나쁨.    
+                if people[0]+people[1] <=limit:
+                    people.popleft()
+                    people.popleft()
+                    cnt+=1
+                else:
+                    people.popleft()
+                    people.popleft()
+                    cnt+=2
+            
+    return cnt+len(people)
+```
+
+## 내가푼정답코드
+```python
+# 불필요 조건문을 제거. 
+from collections import deque
+def solution(people, limit):
+    people.sort(reverse=True)
+    people=deque(people)
+    cnt=0
+    while people:
+        # 사람큐는 2명이상이어야 popleft(),pop() 시 오류가 안남.
+        if len(people)>=2:
+            if people[0]+people[-1]<=limit:
+                cnt+=1
+                people.popleft()
+                people.pop()
+            else:
+                # 가장가벼운사람과 가장무거운 사람이 limit보다 크면, 가장무거운놈을 제거한다. 
+                cnt+=1
+                #가장 무거운 사람을 한명씩 줄여나감. 즉 무거운사람 먼저 처리하므로 그리디임.
+                people.popleft()
+        # len(people)==1 남게될때 처리. 
+        else:
+            cnt+=1
+            people.popleft()
+    
+    return cnt
+```
+
+
+## 모범답안(더빠른풀이)
+```python
+# 불필요 pop(),popleft() 없이 구현
+def solution(people, limit) :
+    people.sort()
+    cnt = 0;
+    #i는 가장 가벼운사람인덱스 / j는 가장 무거운사람 인덱스
+    i = 0; j = len(people)-1
+    while i<=j :
+        cnt+=1
+        if people[j]+people[i]<=limit :
+            i+=1
+        #가장 무거운 사람인덱스 값을 하나씩 줄여나감. 즉 무거운사람 먼저 처리하므로 그리디임.
+        j-=1
+    return cnt
+```
+
+
+
+### 기타사항
+ * 주의할 점 : 생각과달리, indexing으로 비교하는 것이아니라, pop, del, remove 등 리스트자체에서 빼버리면 효율성이 더 나빠진다. (최악의경우 첫번째 풀이처럼 효율성에서 불통한다!)
+ * 생각해보면 당연하다. 인덱싱 접근과 popleft()모두 O(1)이지만, 인덱싱 접근만으로도 문제풀이가가능하다면, 굳이 popleft()까지 더해서 2*O(1)을 만들 필요가 없기때문이다.
+
+
+
+## 참고
+* [github 마크다운 : https://ffoorreeuunn.tistory.com/226](https://ffoorreeuunn.tistory.com/226)
+* [그리디 알고리즘](https://chongmin-k.tistory.com/entry/%EA%B7%B8%EB%A6%AC%EB%94%94-%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98%ED%83%90%EC%9A%95%EB%B2%95)
+* [그리디 알고리즘2](https://runa-nam.tistory.com/57)
+* [구명보트 문제풀이](https://leedakyeong.tistory.com/entry/%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%A8%B8%EC%8A%A4-%EA%B5%AC%EB%AA%85%EB%B3%B4%ED%8A%B8-in-python)
+
