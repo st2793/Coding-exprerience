@@ -1,0 +1,92 @@
+# [민호와강호 [골드5]](https://www.acmicpc.net/problem/11662)
+
+
+## 틀린(못푼) 이유 
+* 삼분탐색에대한개념이 없었다. 
+
+## 문제해결 아이디어
+
+### 개념
+<img src="https://blog.kakaocdn.net/dn/vMKoP/btqEsXi88z3/s3aEzwqg9kLmL0E5zTsqZK/img.png" srcset="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&amp;fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FvMKoP%2FbtqEsXi88z3%2Fs3aEzwqg9kLmL0E5zTsqZK%2Fimg.png"></img?
+<img src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FHw2BY%2FbtqEsDFejyb%2FHzKgdf15QSqMd7PBjZ43n1%2Fimg.png"></img>
+<img src="https://blog.kakaocdn.net/dn/dg7GI9/btqEqsx5bSr/wKGkRqWgACQl5h04y6ZV41/img.png" srcset="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&amp;fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2Fdg7GI9%2FbtqEqsx5bSr%2FwKGkRqWgACQl5h04y6ZV41%2Fimg.png"></img>
+
+## 풀이
+
+### 1. defaultdict를 활용
+```python
+import sys
+from collections import defaultdict
+
+sys.stdin=open('a.txt','rt')
+from collections import deque
+n=int(sys.stdin.readline().rstrip())
+
+nums=defaultdict(int)
+for _ in range(n):
+    num=int(sys.stdin.readline().rstrip())
+    nums[num]+=1
+
+res=0
+cnt=0
+# dict().items()를 for문을 돌려 값을 업데이트
+for k,v in nums.items():
+    if v>cnt:
+        cnt=v
+        res=k
+    elif v==cnt and res>k:
+        cnt = v
+        res = k
+
+print(res)
+```
+
+### 2. dict()선언후 in으로 선언유무 구분
+```python
+import sys
+input = sys.stdin.readline
+
+n = int(input())
+card_dic = {}
+
+for i in range(n) :
+    card = int(input())
+    if card in card_dic :
+        card_dic[card] += 1
+    else :
+        card_dic[card] = 1
+# dict().items()를 sorted함수로 정렬
+result = sorted(card_dic.items(),key = lambda x : (-x[1],x[0]))
+print(result[0][0])
+```
+
+### 3. Counter 활용한 풀이 
+```python
+import sys
+from collections import Counter
+
+from collections import deque
+n=int(sys.stdin.readline().rstrip())
+numbers=[]
+
+for _ in range(n):
+    num=int(sys.stdin.readline().rstrip())
+    numbers.append(num)
+nums=Counter(numbers)
+
+
+res=sorted(nums.items(), key= lambda x : (-x[1],x[0]))
+print(res[0][0])
+
+```
+
+## 정리
+* from collections import defaultdict 후 nums=defaultdict(int) 와같이 선언한다. (defualt int값은 0이됨.) 
+* a=dict() 일때 if key in a 와 같이 dict값이 존재하는지 확인가능하다. 
+* from collections import Counter 후 nums=Counter(numbers) 와같이 입력하여 리스트값을 받는다. 
+
+
+
+## 참고
+* [github 마크다운 : https://ffoorreeuunn.tistory.com/226](https://ffoorreeuunn.tistory.com/226)
+* [풀이참고](https://animoto1.tistory.com/entry/%EB%B0%B1%EC%A4%80-11652-%EC%B9%B4%EB%93%9C-%ED%8C%8C%EC%9D%B4%EC%8D%AC-Python)
